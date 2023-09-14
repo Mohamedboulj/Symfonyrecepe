@@ -4,7 +4,13 @@
 
 {% block body %}
     <div class="container">
-        <h1 class="my-3">Mes ingredients</h1>
+        <h2 class="my-3">My ingredients</h2>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-dismissible alert-success">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <h5>{{ message }}</h5>
+            </div>
+        {% endfor %}
         {% if not ingredients.items is same as ([]) %}
             <div class="count">
                 <h4>
@@ -22,7 +28,7 @@
                 </thead>
                 <tbody>
                 {% for key,ingredient in ingredients %}
-                    <tr>
+                    <tr class="table-primary">
                         <td>{{ key+1 }}</td>
                         <td>{{ ingredient.name }}</td>
                         <td>{{ ingredient.price }}</td>
