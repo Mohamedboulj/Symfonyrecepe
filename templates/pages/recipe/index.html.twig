@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Symrecepe - Mes ingredients {% endblock %}
+{% block title %}Symrecepe - Mes Recipes {% endblock %}
 
 {% block body %}
     <div class="container">
-        <h2 class="my-3">My ingredients</h2>
+        <h2 class="my-3">My Recipes</h2>
         {% for message in app.flashes('success') %}
             <div class="alert alert-dismissible alert-success">
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -17,37 +17,39 @@
                 <h5>{{ message }}</h5>
             </div>
         {% endfor %}
-        {% if not ingredients.items is same as ([]) %}
+        {% if not recipes.items is same as ([]) %}
             <div class="count">
                 <h4>
-                    {{ ingredients.getTotalItemCount }} results were found .
+                    {{ recipes.getTotalItemCount }} results were found .
                 </h4>
             </div>
-            <table class="table table-hover">
+            <table class="table table-hover table-light">
                 <thead>
                 <tr>
                     <th scope="col">N°</th>
                     <th scope="col">Name</th>
                     <th scope="col">Price</th>
+                    <th scope="col">Description</th>
                     <th scope="col">Date of creation</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for key,ingredient in ingredients %}
+                {% for key,recipe in recipes %}
                     <tr class="table-primary">
-                        <td>{{ ingredient.id }}</td>
-                        <td>{{ ingredient.name }}</td>
-                        <td>{{ ingredient.price }}</td>
-                        <td>{{ ingredient.createdAt|date('d/m/y H:i') }}</td>
+                        <td>{{ recipe.id }}</td>
+                        <td>{{ recipe.name }}</td>
+                        <td>{{ recipe.price is not null ? recipe.price : 'NA'|escape }}</td>
+                        <td>{{ recipe.description }}</td>
+                        <td>{{ recipe.createdAt|date('d/m/y H:i') }}</td>
                         <td>
                             <span>
-                                <a href="{{ path('ingredient.update', {id:ingredient.id}) }}">
+                                <a href="{{ path('recipe.update', {id:recipe.id}) }}">
                                     <button class="btn btn-light"><i class="bi bi-pencil-fill text-danger"></i></button>
                                 </a>
                             </span>
                             <span>
-                                <a href="{{ path('ingredient.delete', {id:ingredient.id}) }}">
+                                <a href="{{ path('recipe.delete', {id:recipe.id}) }}">
                                     <button class="btn btn-danger"><i class="bi bi-trash3"></i></button>
                                 </a>
                             </span>
@@ -57,7 +59,7 @@
                 </tbody>
             </table>
             <div class="navigation d-flex justify-content-center">
-                {{ knp_pagination_render(ingredients) }}
+                {{ knp_pagination_render(recipes) }}
             </div>
         {% else %}
             <div class="count">

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\IngredientRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -16,6 +18,7 @@ class Ingredient
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->recepes = new ArrayCollection();
     }
 
     #[ORM\Id]
@@ -35,6 +38,9 @@ class Ingredient
     #[ORM\Column]
     #[Assert\NotNull()]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\ManyToMany(targetEntity: Recipe::class, mappedBy: 'ingredient')]
+    private Collection $recepes;
 
     public function getId(): ?int
     {
@@ -76,4 +82,38 @@ class Ingredient
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Recipe>
+     */
+    public function getRecepes(): Collection
+    {
+        return $this->recepes;
+    }
+
+    public function addRecepe(Recipe $recepe): static
+    {
+        if (!$this->recepes->contains($recepe)) {
+            $this->recepes->add($recepe);
+            $recepe->addIngredient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecepe(Recipe $recepe): static
+    {
+        if ($this->recepes->removeElement($recepe)) {
+            $recepe->removeIngredient($this);
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
+
 }
