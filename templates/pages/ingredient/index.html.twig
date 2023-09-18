@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Symrecepe - Mes ingredients {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h2 class="my-3">My ingredients</h2>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-dismissible alert-success">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <h5>{{ message }}</h5>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-dismissible alert-danger">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <h5>{{ message }}</h5>
+            </div>
+        {% endfor %}
+        {% if not ingredients.items is same as ([]) %}
+            <div class="count">
+                <h4>
+                    {{ ingredients.getTotalItemCount }} results were found .
+                </h4>
+            </div>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Date of creation</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key,ingredient in ingredients %}
+                    <tr class="table-primary">
+                        <td>{{ ingredient.id }}</td>
+                        <td>{{ ingredient.name }}</td>
+                        <td>{{ ingredient.price }}</td>
+                        <td>{{ ingredient.createdAt|date('d/m/y H:i') }}</td>
+                        <td>
+                            <span>
+                                <a href="{{ path('ingredient.update', {id:ingredient.id}) }}">
+                                    <button class="btn btn-light"><i class="bi bi-pencil-fill text-danger"></i></button>
+                                </a>
+                            </span>
+                            <span>
+                                <a href="{{ path('ingredient.delete', {id:ingredient.id}) }}">
+                                    <button class="btn btn-danger"><i class="bi bi-trash3"></i></button>
+                                </a>
+                            </span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="navigation d-flex justify-content-center">
+                {{ knp_pagination_render(ingredients) }}
+            </div>
+        {% else %}
+            <div class="count">
+                <h4>
+                    No results were found .
+                </h4>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
