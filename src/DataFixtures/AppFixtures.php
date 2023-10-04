@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Ingredient;
 use App\Entity\Recipe;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -47,11 +48,18 @@ class AppFixtures extends Fixture
             for ($k = 0; $k < mt_rand(5, 15); $k++) {
                 $recipe->addIngredient($ingredients[mt_rand(0, count($ingredients) - 1)]);
             }
-
             $recipes[] = $recipe;
             $manager->persist($recipe);
-            $manager->flush();
         }
-
+        for ($k = 0; $k < 10; $k++) {
+            $user = new User();
+            $user->setEmail($this->faker->email)
+                ->setFullName($this->faker->firstName)
+                ->setPseudo(mt_rand(0, 1) ? $this->faker->word : null)
+                ->setRoles(['ROLE USER'])
+                ->setPlainPassword('password');
+            $manager->persist($user);
+        }
+        $manager->flush();
     }
 }
