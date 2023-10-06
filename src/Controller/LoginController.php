@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserPasswordType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -40,8 +42,13 @@ class LoginController extends AbstractController
         return $this->render('pages/login/register.html.twig', ['form' => $form->createView()]);
     }
 
-    #[Route('/update/{id}', name: 'security.update')]
-    public function update(int $id, UserRepository $repository, Request $request, EntityManagerInterface $em)
+    #[Route('user/update/{id}', name: 'security.update')]
+    public function update(int                         $id,
+                           UserRepository              $repository,
+                           Request                     $request,
+                           EntityManagerInterface      $em,
+                           UserPasswordHasherInterface $hasher
+    )
     {
         $user = $repository->find($id);
         if (!$this->getUser()) {
@@ -53,11 +60,41 @@ class LoginController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $form->getData();
-            $this->addFlash('success', 'Compte modifie avec succes !');
-            $em->flush();
-            return $this->render('pages/login/index.html.twig', ['last_username' => $user->getEmail(), 'error' => '']);
+            if ($hasher->isPasswordValid($user, $form->getData()->getPlainPassword())) {
+                $user = $form->getData();
+                $this->addFlash('success', 'Compte modifie avec succes !');
+                $em->flush();
+                return $this->redirectToRoute('recipe.index', ['user' => $user]);
+            } else {
+                $this->addFlash('failure', 'mot de passe erronee !');
+            }
         }
         return $this->render('pages/user/update.html.twig', ['form' => $form->createView()]);
+    }
+
+    #[Route('user/reset-password/{id}', name: 'reset.password')]
+    public function reset(User                        $user,
+                          Request                     $request,
+                          UserPasswordHasherInterface $hasher,
+                          EntityManagerInterface      $em
+    )
+    {
+        $form = $this->createForm(UserPasswordType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            //dd($form->getData());
+            if ($hasher->isPasswordValid($user, $form->getData()["plainPassword"])) {
+                $user->setPlainPassword(
+                    $form->getData()["newPassword"]
+                );
+                $em->persist($user);
+                $em->flush();
+                $this->addFlash('success', 'le mot de passe est change');
+                return $this->redirectToRoute('recipe.index');
+            } else {
+                $this->addFlash('failure', 'le mot de passe est incorrect');
+            }
+        }
+        return $this->render('pages/user/pw-reset.html.twig', ['form' => $form->createView()]);
     }
 }
