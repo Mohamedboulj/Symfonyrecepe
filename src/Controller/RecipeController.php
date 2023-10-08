@@ -7,6 +7,8 @@ use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class RecipeController extends AbstractController
 {
     #[Route('/', name: 'index')]
+    #[IsGranted('ROLE_USER')]
     public function index(RecipeRepository   $repository,
                           Request            $request,
                           PaginatorInterface $paginator): Response
@@ -53,6 +56,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/update/{id}', name: 'update')]
+    #[Security("is_granted('ROLE_USER') and user === recipe.GetUser()")]
     public function update(Request $request, ?Recipe $recipe, EntityManagerInterface $em)
     {
         $form = $this->createForm(RecipeType::class, $recipe);
@@ -71,6 +75,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'delete')]
+    #[Security("is_granted('ROLE_USER') and user === recipe.GetUser()")]
     public function delete(?Recipe $recipe, EntityManagerInterface $em)
     {
         if (!$recipe) {

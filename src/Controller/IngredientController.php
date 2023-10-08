@@ -8,6 +8,8 @@ use App\Repository\IngredientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Paginator;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,6 +26,7 @@ class IngredientController extends AbstractController
     }
 
     #[Route('/list', name: 'list')]
+    #[IsGranted('ROLE_USER')]
     public function index(IngredientRepository $ingredientRepository, Request $request): Response
     {
         $ingredients = $this->paginator->paginate(
@@ -58,6 +61,7 @@ class IngredientController extends AbstractController
     }
 
     #[Route('/update/{id}', name: 'update')]
+    #[Security("is_granted('ROLE_USER') and user === ingredient.GetUser()")]
     public function update(Request $request, Ingredient $ingredient)
     {
         $form = $this->createForm(IngredientType::class, $ingredient);
@@ -76,6 +80,7 @@ class IngredientController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'delete')]
+    #[Security("is_granted('ROLE_USER') and user === ingredient.GetUser()")]
     public function delete(?Ingredient $ingredient)
     {
         if (!$ingredient) {
