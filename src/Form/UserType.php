@@ -35,22 +35,6 @@ class UserType extends AbstractType
                     ]
                 ]
             )
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'first_options' => [
-                    'label' => 'Mot de passe',
-                    'label_attr' => [
-                        'class' => 'form-label  mt-4'
-                    ]
-                ],
-                'second_options' => [
-                    'label' => 'Confirmation du mot de passe',
-                    'label_attr' => [
-                        'class' => 'form-label  mt-4'
-                    ],
-                    'invalid_message' => 'Les mots de passe ne correspondent pas.'
-                ]
-            ])
             ->add('fullName', TextType::class, [
                     'attr' => [
                         'class' => 'form-control',
@@ -83,6 +67,22 @@ class UserType extends AbstractType
                     ]
                 ]
             )
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                    'label_attr' => [
+                        'class' => 'form-label  mt-4'
+                    ]
+                ],
+                'second_options' => [
+                    'label' => 'Confirmation du mot de passe',
+                    'label_attr' => [
+                        'class' => 'form-label  mt-4'
+                    ],
+                    'invalid_message' => 'Les mots de passe ne correspondent pas.'
+                ]
+            ])
             ->add('submit', SubmitType::class, ['attr' => [
                 'class' => 'btn btn-primary mt-4',
                 'value' => 'Creer mon compte'

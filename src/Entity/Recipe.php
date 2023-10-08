@@ -64,6 +64,10 @@ class Recipe
     #[ORM\Column(nullable: true)]
     private ?bool $IsPublic = null;
 
+    #[ORM\ManyToOne(inversedBy: 'recipe')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->ingredient = new ArrayCollection();
@@ -222,6 +226,18 @@ class Recipe
     public function setIsPublic(?bool $IsPublic): static
     {
         $this->IsPublic = $IsPublic;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
