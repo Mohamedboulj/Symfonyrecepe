@@ -81,12 +81,18 @@ class LoginController extends AbstractController
     {
         $form = $this->createForm(UserPasswordType::class);
         $form->handleRequest($request);
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('pages/login/index.html.twig');
+        }
+        if ($this->getUser() !== $user) {
+            return $this->redirectToRoute('security.update');
+        }
         if ($form->isSubmitted() && $form->isValid()) {
-            //dd($form->getData());
             if ($hasher->isPasswordValid($user, $form->getData()["plainPassword"])) {
                 $user->setPlainPassword(
                     $form->getData()["newPassword"]
                 );
+                $user->setUpdatedAt(new \DateTimeImmutable());
                 $em->persist($user);
                 $em->flush();
                 $this->addFlash('success', 'le mot de passe est change');
@@ -96,5 +102,11 @@ class LoginController extends AbstractController
             }
         }
         return $this->render('pages/user/pw-reset.html.twig', ['form' => $form->createView()]);
+    }
+
+    #[Route('logout', name: 'security.logout')]
+    public function logout()
+    {
+
     }
 }

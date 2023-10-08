@@ -27,7 +27,7 @@ class IngredientController extends AbstractController
     public function index(IngredientRepository $ingredientRepository, Request $request): Response
     {
         $ingredients = $this->paginator->paginate(
-            $ingredientRepository->findAll(),
+            $ingredientRepository->findBy(['user' => $this->getUser()]),
             $request->query->getInt('page', 1),
             10 /*limit per page*/
         );
@@ -41,6 +41,7 @@ class IngredientController extends AbstractController
     public function new(Request $request): response
     {
         $ingredient = new Ingredient();
+        $ingredient->setUser($this->getUser());
         $form = $this->createForm(IngredientType::class, $ingredient);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

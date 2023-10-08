@@ -22,7 +22,7 @@ class RecipeController extends AbstractController
                           PaginatorInterface $paginator): Response
     {
         $recipes = $paginator->paginate(
-            $repository->findAll(),
+            $repository->findBy(['user' => $this->getUser()]),
             $request->query->getInt('page', 1),
             10 /*limit per page*/
         );
@@ -36,6 +36,7 @@ class RecipeController extends AbstractController
     public function new(EntityManagerInterface $em, Request $request): Response
     {
         $recipe = new Recipe();
+        $recipe->setUser($this->getUser());
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
