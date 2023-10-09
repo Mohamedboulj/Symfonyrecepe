@@ -45,4 +45,12 @@ class RecipeRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findPublicRecipe()
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.IsPublic = true')
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

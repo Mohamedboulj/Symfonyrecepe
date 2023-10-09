@@ -8,45 +8,46 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
                 {% if app.user %}
-                    <li class="nav-item">
-                        <a class="nav-link active" href={{ path('ingredient.list') }}>Ingredients
-                        </a>
+                <li class="nav-item">
+                    <a class="nav-link active" href={{ path('ingredient.list') }}>Ingredients
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href={{ path('recipe.index') }}>Recipes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href={{ path('ingredient.new') }}>New ingredient
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+            <ul class="navbar-nav ms-auto " style="margin-right: 6em;">
+                {% if app.user %}
+                    <li class="nav-item dropdown ">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                           aria-haspopup="true" aria-expanded="false">{{ app.user.fullName }}</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ path('security.update',{id: app.user.id}) }}">modifier
+                                les
+                                informations</a>
+                            <a class="dropdown-item" href="{{ path('reset.password',{id: app.user.id}) }}">reinitialiser
+                                le mot de
+                                passe</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ path('security.logout') }}">se deconnecter</a>
+                        </div>
                     </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link " href={{ path('security.login') }}>Se
+                            connecter
+                        </a></li>
                     <li class="nav-item">
-                        <a class="nav-link active" href={{ path('recipe.index') }}>Recipes
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href={{ path('ingredient.new') }}>New ingredient
+                        <a class="nav-link " href={{ path('register') }}>
+                            S'enregistrer
                         </a>
                     </li>
                 {% endif %}
-                <div class="d-flex">
-                    <ul class="navbar-nav me-auto">
-                        {% if app.user %}
-                            <li class="nav-item dropdown " style="margin-right: 5rem;">
-                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                                   aria-haspopup="true" aria-expanded="false">{{ app.user.fullName }}</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ path('security.update',{id: app.user.id}) }}">modifier
-                                        les
-                                        informations</a>
-                                    <a class="dropdown-item" href="{{ path('reset.password',{id: app.user.id}) }}">reinitialiser
-                                        le mot de
-                                        passe</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{{ path('security.logout') }}">se deconnecter</a>
-                                </div>
-                            </li>
-                        {% else %}
-                            <li class="nav-item"><a class="nav-link " href={{ path('security.login') }}>Se
-                                    connecter
-                                </a></li>
-                            <li class="nav-item"><a class="nav-link " href={{ path('register') }}>S'enregistrer</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
             </ul>
         </div>
     </div>

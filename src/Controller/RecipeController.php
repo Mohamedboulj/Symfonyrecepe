@@ -10,6 +10,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -33,6 +34,13 @@ class RecipeController extends AbstractController
         return $this->render('pages/recipe/index.html.twig', [
             'recipes' => $recipes
         ]);
+    }
+
+    #[Route('/show/{id}', name: 'show')]
+    #[Security("is_granted('ROLE_USER') and user === recipe.GetUser() || recipe.IsPublic() === true ")]
+    public function show(?Recipe $recipe)
+    {
+        return $this->render('pages/recipe/show.html.twig', ['recipe' => $recipe]);
     }
 
     #[Route('/new', name: 'new')]

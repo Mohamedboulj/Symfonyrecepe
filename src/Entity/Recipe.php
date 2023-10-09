@@ -218,7 +218,7 @@ class Recipe
         return $this;
     }
 
-    public function isIsPublic(): ?bool
+    public function IsPublic(): ?bool
     {
         return $this->IsPublic;
     }
