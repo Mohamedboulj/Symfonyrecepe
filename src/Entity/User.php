@@ -57,12 +57,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Recipe::class, orphanRemoval: true)]
     private Collection $recipe;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Rate::class, orphanRemoval: true)]
+    private Collection $rates;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
         $this->ingredients = new ArrayCollection();
         $this->recipe = new ArrayCollection();
+        $this->rates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -258,5 +262,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->fullName;
+    }
+
+    /**
+     * @return Collection<int, Rate>
+     */
+    public function getRates(): Collection
+    {
+        return $this->rates;
+    }
+
+    public function addRate(Rate $rate): static
+    {
+        if (!$this->rates->contains($rate)) {
+            $this->rates->add($rate);
+            $rate->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRate(Rate $rate): static
+    {
+        if ($this->rates->removeElement($rate)) {
+            // set the owning side to null (unless already changed)
+            if ($rate->getUser() === $this) {
+                $rate->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
