@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Ingredient;
+use App\Entity\Rate;
 use App\Entity\Recipe;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -63,6 +64,15 @@ class AppFixtures extends Fixture
             }
             $recipes[] = $recipe;
             $manager->persist($recipe);
+        }
+        foreach ($recipes as $recipe) {
+            for ($k = 0; $k < mt_rand(0, 5); $k++) {
+                $rate = new Rate();
+                $rate->setRate(mt_rand(0, 5))
+                    ->setUser($users[mt_rand(0, count($users) - 1)])
+                    ->setRecipe($recipe);
+                $manager->persist($rate);
+            }
         }
         $manager->flush();
     }

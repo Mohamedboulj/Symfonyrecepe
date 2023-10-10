@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity('name')]
 class Recipe
 {
+    private ?float $average;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -68,11 +69,15 @@ class Recipe
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Rate::class, orphanRemoval: true)]
+    private Collection $rates;
+
     public function __construct()
     {
         $this->ingredient = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
+        $this->rates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -240,5 +245,51 @@ class Recipe
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Rate>
+     */
+    public function getRates(): Collection
+    {
+        return $this->rates;
+    }
+
+    public function addRate(Rate $rate): static
+    {
+        if (!$this->rates->contains($rate)) {
+            $this->rates->add($rate);
+            $rate->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRate(Rate $rate): static
+    {
+        if ($this->rates->removeElement($rate)) {
+            // set the owning side to null (unless already changed)
+            if ($rate->getRecipe() === $this) {
+                $rate->setRecipe(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAverage(): float
+    {
+        $this->average = 0;
+        $ratesArray = $this->rates->toArray();
+        //dd($ratesArray);
+        if (count($ratesArray) !== 0) {
+            foreach ($ratesArray as $rate) {
+                //dd($rate->getRate());
+                $this->average += $rate->getRate();
+            }
+            //dd($this->average);
+            $this->average = $this->average / count($ratesArray);
+        }
+        return round($this->average, 1);
     }
 }

@@ -5,3 +5,11 @@
 span, a {
     text-decoration: none !important;
 }
+
+#rate {
+    margin-inline: 1em;
+}
+
+#rate_rate {
+    width: 5%;
+}

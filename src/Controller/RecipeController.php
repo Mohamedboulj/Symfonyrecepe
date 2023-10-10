@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Rate;
 use App\Entity\Recipe;
+use App\Form\RateType;
 use App\Form\RecipeType;
+use App\Repository\RateRepository;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -38,9 +41,35 @@ class RecipeController extends AbstractController
 
     #[Route('/show/{id}', name: 'show')]
     #[Security("is_granted('ROLE_USER') and user === recipe.GetUser() || recipe.IsPublic() === true ")]
-    public function show(?Recipe $recipe)
+    public function show(?Recipe                $recipe,
+                         Request                $request,
+                         EntityManagerInterface $em,
+                         RecipeRepository       $rep,
+                         RateRepository         $rateRepository
+    )
     {
-        return $this->render('pages/recipe/show.html.twig', ['recipe' => $recipe]);
+        $rate = new Rate();
+        $form = $this->createForm(RateType::class, $rate);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $existingRate = $rateRepository->findBy(['user' => $this->getUser(), 'recipe' => $recipe]);
+            $rate->setRate($data->getRate())
+                ->setUser($this->getUser())
+                ->setRecipe($recipe);
+            if ($recipe->getUser() === $this->getUser()) {
+                $this->addFlash('failure', 'Vous ne pouvez pas évaluer votre propre recette ');
+                return $this->redirectToRoute('recipe.show', ['id' => $recipe->getId()]);
+            }
+            if ($existingRate) {
+                $this->addFlash('failure', 'Vous avez déja laissé un avis ');
+                return $this->redirectToRoute('recipe.show', ['id' => $recipe->getId()]);
+            }
+            $this->addFlash('success', 'Votre note est prise en consideration');
+            $em->persist($rate);
+            $em->flush();
+        }
+        return $this->render('pages/recipe/show.html.twig', ['recipe' => $recipe, 'form' => $form->createView()]);
     }
 
     #[Route('/new', name: 'new')]
