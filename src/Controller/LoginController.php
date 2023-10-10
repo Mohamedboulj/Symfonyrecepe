@@ -7,6 +7,7 @@ use App\Form\UserPasswordType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,6 +44,7 @@ class LoginController extends AbstractController
     }
 
     #[Route('user/update/{id}', name: 'security.update')]
+    #[Security("is_granted('ROLE_USER') and user === user")]
     public function update(int                         $id,
                            UserRepository              $repository,
                            Request                     $request,
@@ -73,6 +75,7 @@ class LoginController extends AbstractController
     }
 
     #[Route('user/reset-password/{id}', name: 'reset.password')]
+    #[Security("is_granted('ROLE_USER') and user === user")]
     public function reset(User                        $user,
                           Request                     $request,
                           UserPasswordHasherInterface $hasher,

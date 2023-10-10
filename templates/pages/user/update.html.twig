@@ -1,11 +1,11 @@
 {% extends "base.html.twig" %}
 {% block body %}
     <div class="container">
-        <div class="mt-2 alert alert-danger">
-            {% for message in app.flashes('failure') %}
+        {% for message in app.flashes('failure') %}
+            <div class="mt-2 alert alert-danger">
                 <h5>{{ message }}</h5>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
         <h2 class="mt-2">Update informations </h2>
         <div class="container mt-2">
             {{ form(form) }}

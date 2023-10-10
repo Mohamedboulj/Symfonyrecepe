@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\Recipe;
+use App\Entity\Rate;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Recipe>
+ * @extends ServiceEntityRepository<Rate>
  *
- * @method Recipe|null find($id, $lockMode = null, $lockVersion = null)
- * @method Recipe|null findOneBy(array $criteria, array $orderBy = null)
- * @method Recipe[]    findAll()
- * @method Recipe[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Rate|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Rate|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Rate[]    findAll()
+ * @method Rate[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class RecipeRepository extends ServiceEntityRepository
+class RateRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Recipe::class);
+        parent::__construct($registry, Rate::class);
     }
 
 //    /**
-//     * @return Recepe[] Returns an array of Recepe objects
+//     * @return Rate[] Returns an array of Rate objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class RecipeRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Recepe
+//    public function findOneBySomeField($value): ?Rate
 //    {
 //        return $this->createQueryBuilder('r')
 //            ->andWhere('r.exampleField = :val')
@@ -45,12 +45,4 @@ class RecipeRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    public function findPublicRecipe()
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.IsPublic = true')
-            ->orderBy('r.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
 }

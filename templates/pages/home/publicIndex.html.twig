@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Symrecepe - Mes Recipes {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h2 class="my-3">Les Recettes publiques : </h2>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-dismissible alert-success">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <h5>{{ message }}</h5>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-dismissible alert-danger">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <h5>{{ message }}</h5>
+            </div>
+        {% endfor %}
+        {% if not recipes.items is same as ([]) %}
+        <div class="count">
+            <h5>{{ recipes.getTotalItemCount }} results were found .</h5>
+        </div>
+        <div class="d-flex flex-wrap justify-content-around">
+            {% set i = 1 %}
+            {% for recipe in recipes %}
+                <div class="card bg-light mb-3 col-lg-3 mx-1">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>Recette N°{{ recipe.id }} </h5>
+                        {# {% for rate in recipe.rates %}
+                            {{ rate.rate }}
+                        {% endfor %} #}
+                        <span class="bg-primary rounded-pill badge">{{ recipe.getAverage() }}</span>
+                        <p></p>
+                        <a href={{ path('recipe.show',{id:recipe.id}) }}>
+                            <button class="btn btn-light">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                     fill="currentColor" class="bi bi-eye-fill text-primary" viewBox="0 0 16 16">
+                                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                </svg>
+                            </button>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">{{ recipe.name }}</h4>
+                        <p class="card-text">{{ recipe.description|slice(0,100) ~ '...' }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+            {% else %}
+                <div class="count">
+                    <h5>No recipes were found .</h5>
+                </div>
+            {% endif %}
+        </div>
+        <div class="navigation d-flex justify-content-center">
+            {{ knp_pagination_render(recipes) }}
+        </div>
+    </div>
+{% endblock %}
