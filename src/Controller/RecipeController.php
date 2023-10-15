@@ -40,11 +40,10 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/show/{id}', name: 'show')]
-    #[Security("is_granted('ROLE_USER') and user === recipe.GetUser() || recipe.IsPublic() === true ")]
+    #[Security("is_granted('ROLE_USER') and (recipe.IsPublic() === true || user === recipe.GetUser()) ")]
     public function show(?Recipe                $recipe,
                          Request                $request,
                          EntityManagerInterface $em,
-                         RecipeRepository       $rep,
                          RateRepository         $rateRepository
     )
     {
@@ -86,7 +85,7 @@ class RecipeController extends AbstractController
             $this->addFlash('success', 'Recipe has been created successfully');
             return $this->redirectToRoute('recipe.index');
         }
-
+        dd($form->getData());
         return $this->render('pages/recipe/new.html.twig', [
             'form' => $form->createView()
         ]);

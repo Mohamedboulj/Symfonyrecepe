@@ -18,6 +18,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\File;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class RecipeType extends AbstractType
 {
@@ -64,7 +66,7 @@ class RecipeType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 1,
-                    'max' => 5
+                    'max' => 400
                 ],
                 'label' => 'Description',
                 'label_attr' => [
@@ -151,6 +153,25 @@ class RecipeType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
             ])
+            ->add('imageFile', VichImageType::class,
+                [
+                    'attr' => [
+                        'class' => 'form-group'
+                    ],
+                    'label' => 'Choisir une photo',
+                    'label_attr' => ['form-label mt-4'],
+                    'required' => false,
+                    'constraints' => [
+                        new File([
+                            'maxSize' => '1024k',
+                            'mimeTypes' => [
+                                'image/*'
+                            ],
+                            'mimeTypesMessage' => 'Please upload a valid Image',
+                        ])
+                    ]
+                ]
+            )
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary mt-4'
