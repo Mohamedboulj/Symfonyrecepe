@@ -16,11 +16,13 @@ class ContactController extends AbstractController
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $contact = new Contact();
-        $form = $this->createForm(ContactType::class, $contact);
         if ($this->getUser()) {
             $contact->setFullName($this->getUser()->getFullName())
                 ->setEmail($this->getUser()->getEmail());
+            // dd($contact);
         }
+        $form = $this->createForm(ContactType::class, $contact);
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $contact = $form->getData();
