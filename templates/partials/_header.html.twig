@@ -35,6 +35,12 @@
                                 le mot de
                                 passe</a>
                             <div class="dropdown-divider"></div>
+                            {% if 'ROLE_ADMIN' in app.user.roles %}
+                                <a class="dropdown-item" href="{{ path('admin') }}">
+                                    Administration
+                                </a>
+                                <div class="dropdown-divider"></div>
+                            {% endif %}
                             <a class="dropdown-item" href="{{ path('security.logout') }}">se deconnecter</a>
                         </div>
                     </li>

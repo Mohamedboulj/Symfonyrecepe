@@ -13,10 +13,8 @@ use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/recipe', name: 'recipe.')]
@@ -85,7 +83,6 @@ class RecipeController extends AbstractController
             $this->addFlash('success', 'Recipe has been created successfully');
             return $this->redirectToRoute('recipe.index');
         }
-        dd($form->getData());
         return $this->render('pages/recipe/new.html.twig', [
             'form' => $form->createView()
         ]);
