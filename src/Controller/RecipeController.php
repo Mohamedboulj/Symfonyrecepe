@@ -121,5 +121,20 @@ class RecipeController extends AbstractController
         return $this->redirectToRoute('recipe.index');
     }
 
-
+    #[Route('/search', name: 'search')]
+    public function search(RecipeRepository   $repository,
+                           Request            $request,
+                           PaginatorInterface $paginator,
+    ): Response
+    {
+        $query = $request->query->get('query');
+        $recipes = $paginator->paginate(
+            $repository->findPublicRecipe($query),
+            $request->query->getInt('page', 1),
+            10 /*limit per page*/
+        );
+        return $this->render('pages/home/publicIndex.html.twig', [
+            'recipes' => $recipes
+        ]);
+    }
 }

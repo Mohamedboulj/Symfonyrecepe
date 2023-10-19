@@ -45,12 +45,18 @@ class RecipeRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    public function findPublicRecipe()
+    public function findPublicRecipe(?string $query = null)
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.IsPublic = true')
-            ->orderBy('r.createdAt', 'DESC')
+        $qb = $this->createQueryBuilder('r');
+        $qb->andWhere('r.IsPublic = true');
+        if ($query) {
+            $qb->where('r.name LIKE :query')
+                ->orWhere('r.description LIKE :query')
+                ->setParameter('query', '%' . $query . '%');
+        }
+        $qb->orderBy('r.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
+        return $qb;
     }
 }

@@ -23,5 +23,8 @@
 {% endblock %}
 {% block body %}{% endblock %}
 <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+{% block footer %}
+    {% include 'partials/_footer.html.twig' %}
+{% endblock %}
 </body>
 </html>
